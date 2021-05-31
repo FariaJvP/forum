@@ -1,27 +1,48 @@
 package br.com.zup.forum.modelo;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Topico {
-
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String titulo;
 	private String mensagem;
 	private LocalDateTime dataCriacao = LocalDateTime.now();
+	@Enumerated(EnumType.STRING)
 	private StatusTopico status = StatusTopico.NAO_RESPONDIDO;
+
+	@ManyToOne
 	private Usuario autor;
+
+	@ManyToOne
 	private Curso curso;
+
+	@OneToMany(mappedBy = "topico")
 	private List<Resposta> respostas = new ArrayList<>();
 
-	public Topico(String titulo, String mensagem, Curso curso) {
-		this.titulo = titulo;
-		this.mensagem = mensagem;
-		this.curso = curso;
+	@Deprecated
+	public Topico(){
+		//construtor padrão
 	}
 
-	@Override
+    // construtor para o formulário dto de entrada
+	public Topico(String titulo, String mensagem, Curso nomeCurso) {
+		this.titulo = titulo;
+		this.mensagem = mensagem;
+		this.curso = nomeCurso;
+    }
+
+    //metodo que substitui os setters e possibilita alteração do titulo e mensagem do topico
+    public void atualiza(String titulo, String mensagem){
+		this.titulo = titulo;
+		this.mensagem = mensagem;
+	}
+
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -50,64 +71,27 @@ public class Topico {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public String getTitulo() {
 		return titulo;
-	}
-
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
 	}
 
 	public String getMensagem() {
 		return mensagem;
 	}
 
-	public void setMensagem(String mensagem) {
-		this.mensagem = mensagem;
-	}
-
 	public LocalDateTime getDataCriacao() {
 		return dataCriacao;
-	}
-
-	public void setDataCriacao(LocalDateTime dataCriacao) {
-		this.dataCriacao = dataCriacao;
 	}
 
 	public StatusTopico getStatus() {
 		return status;
 	}
 
-	public void setStatus(StatusTopico status) {
-		this.status = status;
-	}
-
 	public Usuario getAutor() {
 		return autor;
-	}
-
-	public void setAutor(Usuario autor) {
-		this.autor = autor;
-	}
-
-	public Curso getCurso() {
-		return curso;
-	}
-
-	public void setCurso(Curso curso) {
-		this.curso = curso;
 	}
 
 	public List<Resposta> getRespostas() {
 		return respostas;
 	}
-
-	public void setRespostas(List<Resposta> respostas) {
-		this.respostas = respostas;
-	}
-
 }
